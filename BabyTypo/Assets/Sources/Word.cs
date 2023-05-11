@@ -38,7 +38,7 @@ public class Word : MonoBehaviour
 
         _player = Instantiate(_playerPrefab);
         _player.transform.SetPositionAndRotation(transform.position, transform.rotation);
-        _player.OnHitEnded += Player_OnHitEnded;
+        _player.Word = this;
     }
 
     private void Update()
@@ -51,14 +51,15 @@ public class Word : MonoBehaviour
             }
             else
             {
-                _player.SetHitTarget(_letters[0].transform.position);
+                _player.SetTargets(_letters[0].transform.position, _letters[0].transform.position);
             }
+            _letters.RemoveAt(0);
         }
     }
 
-    private void Player_OnHitEnded()
+    public void RemoveFirstLetter()
     {
         Destroy(_letters[0].gameObject);
-        _letters.RemoveAt(0);
+
     }
 }

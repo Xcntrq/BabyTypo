@@ -1,34 +1,24 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private Vector2 _hitTarget;
     private Vector2 _moveTarget;
     private IEnumerator move;
 
-    public event Action OnHitEnded;
+    public Word Word { get; set; }
 
     public void SetTargets(Vector2 hitTarget, Vector2 moveTarget)
     {
-        _hitTarget = hitTarget;
         _moveTarget = moveTarget;
-
-        Hit();
-    }
-
-    public void SetHitTarget(Vector2 hitTarget)
-    {
-        _hitTarget = hitTarget;
-
-        Hit();
+        StopAllCoroutines();
+        Hit(hitTarget);
     }
 
     public void OnHitEnd()
     {
-        StopCoroutine(move);
-        StartCoroutine(move);
+        Word.RemoveFirstLetter();
+        StartCoroutine(Move());
     }
 
     private void Awake()
@@ -36,21 +26,23 @@ public class Player : MonoBehaviour
         move = Move();
     }
 
-    private void Hit()
+    private void Hit(Vector2 hitTarget)
     {
-        transform.position = _hitTarget;
-        OnHitEnd();
-        OnHitEnded?.Invoke();
+        transform.position = hitTarget;
+        GetComponentInChildren<Animator>().SetTrigger("Hit");
     }
 
     private IEnumerator Move()
     {
-        float distance = Vector2.Distance(transform.position, _moveTarget);
-        while (distance > 0)
+        print("StartCoroutine");
+        while (Vector2.Distance(transform.position, _moveTarget) > 0)
         {
             transform.position = Vector2.MoveTowards(transform.position, _moveTarget, Time.deltaTime);
 
             yield return null;
         }
+
+        print("EndCoroutine");
+        GetComponentInChildren<Animator>().SetTrigger("Idle");
     }
 }

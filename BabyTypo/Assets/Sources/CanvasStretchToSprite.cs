@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class LetterCanvas : MonoBehaviour
+public class CanvasStretchToSprite : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer _letterSkin;
 
