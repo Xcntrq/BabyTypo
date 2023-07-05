@@ -47,11 +47,11 @@ public class Word : MonoBehaviour
         {
             if (_letters.Count > 1)
             {
-                _player.SetTargets(_letters[0].transform.position, _letters[1].transform.position);
+                _player.SetTargets(_letters[0].transform, _letters[1].transform);
             }
             else
             {
-                _player.SetTargets(_letters[0].transform.position, _letters[0].transform.position);
+                _player.SetTargets(_letters[0].transform, _letters[0].transform);
             }
             _letters.RemoveAt(0);
         }

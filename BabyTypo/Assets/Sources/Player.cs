@@ -4,37 +4,39 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Vector2 _moveTarget;
-    private IEnumerator move;
+    private IEnumerator _move;
+    private Transform _hitTarget;
 
     public Word Word { get; set; }
 
-    public void SetTargets(Vector2 hitTarget, Vector2 moveTarget)
+    public void SetTargets(Transform hitTarget, Transform moveTarget)
     {
-        _moveTarget = moveTarget;
-        StopAllCoroutines();
-        Hit(hitTarget);
+        if (_hitTarget != null)
+        {
+            Destroy(_hitTarget.gameObject);
+        }
+
+        _hitTarget = hitTarget;
+        _moveTarget = moveTarget.position;
+        StopCoroutine(_move);
+        Hit();
     }
 
     public void OnHitEnd()
     {
-        Word.RemoveFirstLetter();
-        StartCoroutine(Move());
+        Destroy(_hitTarget.gameObject);
+        _move = Move();
+        StartCoroutine(_move);
     }
 
-    private void Awake()
+    private void Hit()
     {
-        move = Move();
-    }
-
-    private void Hit(Vector2 hitTarget)
-    {
-        transform.position = hitTarget;
+        transform.position = _hitTarget.position;
         GetComponentInChildren<Animator>().SetTrigger("Hit");
     }
 
     private IEnumerator Move()
     {
-        print("StartCoroutine");
         while (Vector2.Distance(transform.position, _moveTarget) > 0)
         {
             transform.position = Vector2.MoveTowards(transform.position, _moveTarget, Time.deltaTime);
@@ -42,7 +44,6 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        print("EndCoroutine");
         GetComponentInChildren<Animator>().SetTrigger("Idle");
     }
 }
